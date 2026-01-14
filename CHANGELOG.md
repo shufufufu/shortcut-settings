@@ -30,3 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - 仅支持 **boolean** 类型的 VSCode 设置项
 - 非 boolean 类型会提示错误并拒绝写入
+
+## [0.0.1-2] - Initial Release
+
+### Added
+- 代码重构
+- 添加 mappings的管理方法 `add`、`edit`、`remove`、`list`

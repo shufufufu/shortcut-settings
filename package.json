@@ -2,7 +2,7 @@
   "name": "shortcut-settings",
   "displayName": "shortcut-settings",
   "description": "Map VSCode configuration to keyboard",
-  "version": "0.0.1",
+  "version": "0.0.1-1",
   "engines": {
     "vscode": "^1.101.2"
   },
@@ -15,7 +15,11 @@
     "onCommand:shortcut-settings.setFalse",
     "onCommand:shortcut-settings.pickAndToggle",
     "onCommand:shortcut-settings.copyKeybindingSnippet",
-    "onCommand:shortcut-settings.pickBooleanSetting"
+    "onCommand:shortcut-settings.pickBooleanSetting",
+    "onCommand:shortcut-settings.listMappings",
+    "onCommand:shortcut-settings.addMapping",
+    "onCommand:shortcut-settings.editMapping",
+    "onCommand:shortcut-settings.removeMapping"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -43,6 +47,22 @@
       {
         "command": "shortcut-settings.pickBooleanSetting",
         "title": "Shortcut Settings: Pick Boolean Setting"
+      },
+      {
+        "command": "shortcut-settings.listMappings",
+        "title": "Shortcut Settings: List Mappings"
+      },
+      {
+        "command": "shortcut-settings.addMapping",
+        "title": "Shortcut Settings: Add Mapping"
+      },
+      {
+        "command": "shortcut-settings.editMapping",
+        "title": "Shortcut Settings: Edit Mapping"
+      },
+      {
+        "command": "shortcut-settings.removeMapping",
+        "title": "Shortcut Settings: Remove Mapping"
       }
     ],
     "configuration": {
