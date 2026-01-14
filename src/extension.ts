@@ -131,7 +131,7 @@ export function activate(context: vscode.ExtensionContext) {
 		);
 	}
 
-	async function addMappingForSetting(setting: BooleanSettingMeta) {
+	async function addMappingForSetting(setting: BooleanSettingMeta, target: WriteTarget) {
 		const existing = await getMappings();
 		if (existing.some((m) => m.key === setting.key)) {
 			void vscode.window.showInformationMessage(`Shortcut Settings: mapping for "${setting.key}" already exists`);
@@ -142,7 +142,7 @@ export function activate(context: vscode.ExtensionContext) {
 			id: deriveIdFromKey(setting.key),
 			key: setting.key,
 			title: setting.title,
-			target: 'user',
+			target,
 		};
 
 		await saveMappings([...existing, next]);
@@ -296,12 +296,18 @@ export function activate(context: vscode.ExtensionContext) {
 					uniq.set(s.key, s);
 				}
 			}
-			const items = Array.from(uniq.values()).map((s) => ({
-				label: s.title ? s.title : s.key,
-				description: s.key,
-				detail: s.description,
-				setting: s,
-			}));
+			
+			const config = vscode.workspace.getConfiguration();
+			const items = Array.from(uniq.values()).map((s) => {
+				const currentValue = config.get(s.key);
+				const valueText = typeof currentValue === 'boolean' ? (currentValue ? 'ON' : 'OFF') : 'N/A';
+				return {
+					label: s.title ? s.title : s.key,
+					description: s.key,
+					detail: `[${valueText}] ${s.description ?? ''}`.trim(),
+					setting: s,
+				};
+			});
 
 			const picked = await vscode.window.showQuickPick(items, {
 				title: 'Shortcut Settings: Pick a boolean setting',
@@ -326,7 +332,17 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 			if (action.action === 'add') {
-				await addMappingForSetting(picked.setting);
+				const targetPicked = await vscode.window.showQuickPick(
+					[
+						{ label: 'User', description: 'Write to user settings', target: 'user' as const },
+						{ label: 'Workspace', description: 'Write to workspace settings', target: 'workspace' as const },
+					],
+					{ title: 'Shortcut Settings: Choose target for this mapping' }
+				);
+				if (!targetPicked) {
+					return;
+				}
+				await addMappingForSetting(picked.setting, targetPicked.target);
 			} else {
 				await copyKeybindingSnippetForSetting(picked.setting);
 			}
