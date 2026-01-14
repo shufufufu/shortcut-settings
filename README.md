@@ -1,42 +1,77 @@
-# shortcut-settings
+# Shortcut Settings
 
-把 VSCode 的设置项（第一期：仅 `boolean`）“命令化”，从而可以绑定到快捷键，实现一键切换开关。
+**让 VSCode 的任意 boolean 配置项都能绑定快捷键，一键切换开关。**
 
-> 原理：通过 `vscode.workspace.getConfiguration().get()` 读取设置，通过 `update()` 写回设置（默认写入 **User / Global**）。
+---
 
-## Features
+## ✨ 核心功能
 
-- 将任意 **boolean** 类型的 VSCode setting 映射为可绑定快捷键的命令：
-  - Toggle（true/false 互切）
-  - Set True / Set False（显式设值）
-- 支持在扩展配置里维护一个映射清单 `shortcut-settings.mappings`
-- 提供 QuickPick：从映射清单里选择并切换
-- 提供辅助命令：生成可粘贴到 `keybindings.json` 的片段
+### 1. 从系统配置中直接选择 (推荐)
 
-## Commands
+不需要手写配置 key，直接从所有已安装扩展的 boolean 配置项中选择：
 
-- `Shortcut Settings: Toggle Setting` (`shortcut-settings.toggle`)
-- `Shortcut Settings: Set Setting True` (`shortcut-settings.setTrue`)
-- `Shortcut Settings: Set Setting False` (`shortcut-settings.setFalse`)
-- `Shortcut Settings: Pick And Toggle` (`shortcut-settings.pickAndToggle`)
-- `Shortcut Settings: Copy Keybinding Snippet` (`shortcut-settings.copyKeybindingSnippet`)
+1. 打开命令面板，运行：**`Shortcut Settings: Pick Boolean Setting`**
+2. 搜索并选择你想要的配置（实时显示当前值 ON/OFF）
+3. 选择动作：
+   - **Add to mappings** - 添加到常用列表（可选 user/workspace）
+   - **Copy keybinding snippet** - 复制快捷键片段到剪贴板
 
-## Extension Settings
+### 2. 快捷键直接切换
 
-本扩展贡献了以下设置：
+在 `keybindings.json` 中绑定任意 boolean 配置：
+
+```jsonc
+{
+  "key": "ctrl+alt+m",
+  "command": "shortcut-settings.toggle",
+  "args": {
+    "key": "editor.minimap.enabled",
+    "title": "Minimap"
+  }
+}
+```
+
+保存后，按 `Ctrl+Alt+M` 即可一键开关 Minimap。
+
+### 3. 从常用列表快速切换
+
+1. 在 Settings 中配置 `shortcut-settings.mappings`（或通过 Pick Boolean Setting 自动添加）
+2. 命令面板运行：**`Shortcut Settings: Pick And Toggle`**
+3. 从列表中选择并切换
+
+---
+
+## 📦 可用命令
+
+| 命令 | 说明 |
+|------|------|
+| `Shortcut Settings: Pick Boolean Setting` | 从所有配置中选择 boolean 项并操作 |
+| `Shortcut Settings: Toggle Setting` | 切换指定配置（需传入 args） |
+| `Shortcut Settings: Set Setting True` | 强制设为 true |
+| `Shortcut Settings: Set Setting False` | 强制设为 false |
+| `Shortcut Settings: Pick And Toggle` | 从 mappings 列表中选择并切换 |
+| `Shortcut Settings: Copy Keybinding Snippet` | 复制 keybinding 片段到剪贴板 |
+
+---
+
+## ⚙️ 配置说明
 
 ### `shortcut-settings.mappings`
 
-一个数组，用于声明你想要映射到快捷键的 setting。
+维护你常用的 boolean 配置清单，方便快速切换和绑定快捷键。
 
-每一项结构如下：
+**结构：**
 
-- `id`：string，唯一标识（自定义）
-- `key`：string，VSCode setting key，例如 `editor.minimap.enabled`
-- `title`：string，可选，展示名称（用于 QuickPick/状态栏提示）
-- `target`：`"user" | "workspace"`，可选，写入目标。默认 `user`
+```typescript
+{
+  "id": string,           // 唯一标识（会自动从 key 生成）
+  "key": string,          // VSCode 配置 key（如 "editor.minimap.enabled"）
+  "title"?: string,       // 显示名称（可选）
+  "target"?: "user" | "workspace"  // 写入位置（默认 user）
+}
+```
 
-示例：
+**示例：**
 
 ```jsonc
 {
@@ -48,69 +83,116 @@
       "target": "user"
     },
     {
-      "id": "bracketPairColorization",
-      "key": "editor.bracketPairColorization.enabled",
-      "title": "Bracket Pair Colorization",
-      "target": "user"
+      "id": "breadcrumbs",
+      "key": "breadcrumbs.enabled",
+      "title": "Breadcrumbs"
     }
   ]
 }
 ```
 
-## Keybindings（快捷键绑定）
+> **💡 提示**：不需要手写！使用 `Pick Boolean Setting` 命令自动添加。
 
-### 方式 A：直接绑定通用命令（推荐）
+---
 
-在 `keybindings.json` 中添加：
+## 🎯 使用场景
+
+### 场景 1：演示/录屏时快速隐藏干扰元素
+
+```jsonc
+// 一键隐藏 Minimap
+{ "key": "f9", "command": "shortcut-settings.toggle", "args": { "key": "editor.minimap.enabled" } }
+
+// 一键隐藏面包屑导航
+{ "key": "f10", "command": "shortcut-settings.toggle", "args": { "key": "breadcrumbs.enabled" } }
+```
+
+### 场景 2：切换编辑器辅助功能
+
+```jsonc
+// 切换括号对颜色
+{ "key": "ctrl+alt+b", "command": "shortcut-settings.toggle", "args": { "key": "editor.bracketPairColorization.enabled" } }
+
+// 切换行号显示
+{ "key": "ctrl+alt+l", "command": "shortcut-settings.toggle", "args": { "key": "editor.lineNumbers" } }
+```
+
+### 场景 3：工作区专属配置
 
 ```jsonc
 {
-  "key": "ctrl+alt+m",
+  "key": "ctrl+alt+w",
   "command": "shortcut-settings.toggle",
   "args": {
-    "key": "editor.minimap.enabled",
-    "target": "user",
-    "title": "Minimap"
+    "key": "editor.formatOnSave",
+    "target": "workspace"  // 仅影响当前工作区
   }
 }
 ```
 
-同理，你也可以绑定显式设值：
+---
 
-```jsonc
-{
-  "key": "ctrl+alt+shift+m",
-  "command": "shortcut-settings.setFalse",
-  "args": {
-    "key": "editor.minimap.enabled",
-    "target": "user",
-    "title": "Minimap"
-  }
-}
+## 🔧 原理说明
+
+通过 VSCode Extension API 的 `workspace.getConfiguration()` 读取配置，使用 `update()` 方法写回：
+
+- `target: "user"` → 写入全局用户配置
+- `target: "workspace"` → 写入工作区配置
+
+**限制：**
+- 当前仅支持 **boolean** 类型配置
+- 非 boolean 类型会报错并拒绝写入
+
+---
+
+## 📝 快速开始
+
+### 方法 A：命令式（推荐新手）
+
+1. 打开命令面板（`Cmd/Ctrl+Shift+P`）
+2. 运行 `Shortcut Settings: Pick Boolean Setting`
+3. 搜索你想要的配置（如输入 `minimap`）
+4. 选择 `Add to mappings` → 选择 `User`
+5. 再运行 `Pick And Toggle` 就能快速切换
+
+### 方法 B：直接绑定快捷键（推荐熟练用户）
+
+1. 打开 `keybindings.json`（命令面板搜索 `Open Keyboard Shortcuts (JSON)`）
+2. 添加绑定：
+   ```jsonc
+   {
+     "key": "你的快捷键",
+     "command": "shortcut-settings.toggle",
+     "args": { "key": "配置项的key" }
+   }
+   ```
+3. 保存即生效
+
+---
+
+## 🛠️ 开发与贡献
+
+```bash
+# 安装依赖
+pnpm install
+
+# 启动开发模式
+pnpm run watch
+
+# 打包
+pnpm run package
 ```
 
-### 方式 B：用辅助命令生成片段
+在 VSCode 中按 `F5` 启动 Extension Development Host 进行调试。
 
-1. 打开命令面板，运行：`Shortcut Settings: Copy Keybinding Snippet`
-2. 从列表中选择一个 mapping
-3. 扩展会将 JSON 片段复制到剪贴板
-4. 粘贴到 `keybindings.json`，再手动补上你的 `key`
+---
 
-## Notes / Limitations
+## 📄 更新日志
 
-- 第一版仅支持 **boolean** 设置项：
-  - 如果读取到的当前值不是 boolean（例如 key 写错、或该设置不是 boolean），扩展会提示错误并拒绝写入。
-- 默认写入目标为 **User / Global**（即 `target: "user"`）。你也可以在 args 或 mapping 中指定 `"workspace"`。
+查看 [CHANGELOG.md](./CHANGELOG.md) 了解详细版本历史。
 
-## Development
+---
 
-- `pnpm install`
-- 在 VSCode 中按 `F5` 启动 Extension Development Host
+## 📜 协议
 
-## Release Notes
-
-### 0.0.1
-
-- 初版：boolean setting 的 toggle / setTrue / setFalse
-- QuickPick：从 mappings 中选择并切换
-- 复制 keybinding snippet
+MIT
