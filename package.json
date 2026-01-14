@@ -10,6 +10,12 @@
     "Other"
   ],
   "activationEvents": [
+    "onCommand:shortcut-settings.toggle",
+    "onCommand:shortcut-settings.setTrue",
+    "onCommand:shortcut-settings.setFalse",
+    "onCommand:shortcut-settings.pickAndToggle",
+    "onCommand:shortcut-settings.copyKeybindingSnippet",
+    "onCommand:shortcut-settings.pickBooleanSetting"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -33,6 +39,10 @@
       {
         "command": "shortcut-settings.copyKeybindingSnippet",
         "title": "Shortcut Settings: Copy Keybinding Snippet"
+      },
+      {
+        "command": "shortcut-settings.pickBooleanSetting",
+        "title": "Shortcut Settings: Pick Boolean Setting"
       }
     ],
     "configuration": {
