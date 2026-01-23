@@ -2,7 +2,7 @@
   "name": "shortcut-settings",
   "displayName": "shortcut-settings",
   "description": "Map VSCode configuration to keyboard",
-  "version": "0.0.1-1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.101.2"
   },
@@ -19,50 +19,59 @@
     "onCommand:shortcut-settings.listMappings",
     "onCommand:shortcut-settings.addMapping",
     "onCommand:shortcut-settings.editMapping",
-    "onCommand:shortcut-settings.removeMapping"
+    "onCommand:shortcut-settings.removeMapping",
+    "onCommand:shortcut-settings.bindKeyToMapping"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "shortcut-settings.toggle",
-        "title": "Shortcut Settings: Toggle Setting"
+        "title": "Shortcut Settings: Toggle Setting(切换设置)"
       },
       {
         "command": "shortcut-settings.setTrue",
-        "title": "Shortcut Settings: Set Setting True"
+        "title": "Shortcut Settings: Set Setting True(设为 True)"
       },
       {
         "command": "shortcut-settings.setFalse",
-        "title": "Shortcut Settings: Set Setting False"
+        "title": "Shortcut Settings: Set Setting False(设为 False)"
       },
       {
         "command": "shortcut-settings.pickAndToggle",
-        "title": "Shortcut Settings: Pick And Toggle"
+        "title": "Shortcut Settings: Pick And Toggle(选择并切换)"
       },
       {
         "command": "shortcut-settings.copyKeybindingSnippet",
-        "title": "Shortcut Settings: Copy Keybinding Snippet"
+        "title": "Shortcut Settings: Copy Keybinding Snippet(复制快捷键代码片段)"
       },
       {
         "command": "shortcut-settings.pickBooleanSetting",
-        "title": "Shortcut Settings: Pick Boolean Setting"
+        "title": "Shortcut Settings: Pick Boolean Setting(选择布尔型设置)"
       },
       {
         "command": "shortcut-settings.listMappings",
-        "title": "Shortcut Settings: List Mappings"
+        "title": "Shortcut Settings: List Mappings(列出映射表)"
       },
       {
         "command": "shortcut-settings.addMapping",
-        "title": "Shortcut Settings: Add Mapping"
+        "title": "Shortcut Settings: Add Mapping(添加映射)"
       },
       {
         "command": "shortcut-settings.editMapping",
-        "title": "Shortcut Settings: Edit Mapping"
+        "title": "Shortcut Settings: Edit Mapping(编辑映射)"
       },
       {
         "command": "shortcut-settings.removeMapping",
-        "title": "Shortcut Settings: Remove Mapping"
+        "title": "Shortcut Settings: Remove Mapping(删除映射)"
+      },
+      {
+        "command": "shortcut-settings.bindKeyToMapping",
+        "title": "Shortcut Settings: Bind Key to Mapping(绑定快捷键)"
+      },
+      {
+        "command": "shortcut-settings.deleteKeybinding",
+        "title": "Shortcut Settings: Delete Keybinding(删除快捷键)"
       }
     ],
     "configuration": {

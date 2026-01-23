@@ -9,6 +9,8 @@ import {
 	registerAddMappingCommand,
 	registerEditMappingCommand,
 	registerRemoveMappingCommand,
+	registerBindKeyToMappingCommand,
+	registerDeleteKeybindingCommand,
 } from './commands/mappingManagementCommands';
 
 // This method is called when your extension is activated
@@ -29,6 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
 	registerAddMappingCommand(context);
 	registerEditMappingCommand(context);
 	registerRemoveMappingCommand(context);
+	registerBindKeyToMappingCommand(context);
+	registerDeleteKeybindingCommand(context);
 }
 
 // This method is called when your extension is deactivated
